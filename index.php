@@ -10,8 +10,8 @@
 	if ($_SERVER['REQUEST_METHOD']=='POST') {
 
 		//file destination	
-		//$uploaddir = './uploads/';
-		$uploadfile = basename($_FILES['uploadfile']['name']);
+	    $uploaddir = './uploads/';
+		$uploadfile = $uploaddir.basename($_FILES['uploadfile']['name']);
 
 		// copy:
 		if (copy($_FILES['uploadfile']['tmp_name'], $uploadfile)){

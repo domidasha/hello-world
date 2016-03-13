@@ -2,14 +2,6 @@
 <html>
 <head>
 	<title>Form</title>
-
-	<style type="text/css">	
-	img{
-		width: 200px;
-		border: 1px solid #000;
-	}
-	</style>
-
 </head>
 <body>
 

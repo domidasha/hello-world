@@ -48,10 +48,20 @@ function get_user_by_login_password($login, $password) {
 
 	$result = mysqli_query($dbCon, $sql); 
    
-    if($result->num_rows == 1) {
-        $row = mysqli_fetch_assoc($result);
-        return $row;
-    }
+
+    $row_cnt = mysqli_num_rows($result);
+  //  printf("vsego strok:.\n". $row_cnt);
+    if ($row_cnt==1) {
+    print_r($row_cnt);
+    return $row_cnt; 
+    } else {
+
+   // if($result->num_rows == 1) {
+      //  $row = mysqli_fetch_assoc($result);
+       // return $row;
+        //}
     return null;
+    }
+    
 } 
 

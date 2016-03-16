@@ -1,4 +1,5 @@
 <?php
+session_start();
 $dbHost = "localhost";
 $dbUser = "root";
 $dbPassword = "root";
@@ -50,8 +51,34 @@ function get_user_by_login_password($login, $password) {
    
     if($result->num_rows == 1) {
         $row = mysqli_fetch_assoc($result);
+        var_dump($row);
         return $row;
     }
     return null;
+}
+
+function get_user_by_id($userId) {
+    global $dbCon;
+    $sql = "SELECT * FROM user WHERE id = '{$userId}'";
+    $result = mysqli_query($dbCon, $sql); 
+
+    $row = mysqli_fetch_assoc($result);
+    
+    return $row;
 } 
 
+function setCurrentUser($user) {    
+    if (is_array($user)) {
+        if (array_key_exists('id', $user)) { 
+            $_SESSION['id'] = $user['id'];
+            } 
+    }
+}
+
+function getCurrentUser() {
+    if (isset($_SESSION['id'])) {
+        return get_user_by_id($_SESSION['id']);
+    }
+
+    return null;    
+}

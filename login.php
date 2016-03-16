@@ -1,5 +1,7 @@
 
 <?php
+
+include_once('functions.php');
 $loginErrors = array();
 $passwordErrors = array();
 
@@ -7,7 +9,7 @@ $passwordErrors = array();
 
 <?php	
 
-	include_once('functions.php');
+	
 
 
 	$loginErrors = validate_login_field($_POST['login']);
@@ -15,18 +17,18 @@ $passwordErrors = array();
 
 	if (count($loginErrors)==0 && count($passwordErrors)==0) { 
 		$user = get_user_by_login_password($_POST['login'], $_POST['password']);
-
+		
+		
 		if(is_null($user)){
 			$loginErrors[] = "user not exists.";
+		} else {
+			setCurrentUser($user);
+			header("HTTP/1.1 301 Moved Permanently");
+			header("Location: http://domen1.dev/twitts.php");
+			exit();
 		}
 
 	}
-
-	// $loginErrors = 'error';
-	// $user = get_user_by_login_password(....); 
-	// null |array();
-	// if (is_null($user)) {
-
 ?>
 
 
@@ -36,6 +38,7 @@ $passwordErrors = array();
 <!DOCTYPE>
 <html>
 <head>
+<title>log in</title>
 
 <style>
 	.error {

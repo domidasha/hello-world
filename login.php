@@ -23,9 +23,7 @@ $passwordErrors = array();
 			$loginErrors[] = "user not exists.";
 		} else {
 			setCurrentUser($user);
-			header("HTTP/1.1 301 Moved Permanently");
-			header("Location: http://domen1.dev/twitts.php");
-			exit();
+			redirect('twitts.php');
 		}
 
 	}

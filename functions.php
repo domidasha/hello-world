@@ -24,7 +24,6 @@ function validate_login_field($login){
     else if (iconv_strlen($login)>100) {
     	$error[] = 'Login is too long';
     }
-
     return $error;
 }
 
@@ -82,3 +81,84 @@ function getCurrentUser() {
 
     return null;    
 }
+
+
+function validate_message_field($message){ 
+    $error = array();
+    if (empty($message)) {
+        $error[] = 'Write your message';
+    }
+    else if (iconv_strlen($message)>140) {
+        $error[] = 'Message is too long';
+    }
+
+    return $error;
+}
+
+function redirect($address) {
+    header("HTTP/1.1 301 Moved Permanently");
+    header("Location: http://domen1.dev/".$address);
+    exit();
+}
+
+
+function validate_uploaded_file($uploadedFile) {
+    $error = array();
+    
+    print_r(array_key_exists('size', $uploadedFile));
+      
+    //     $error[] = "no image";
+    // }
+    if (($uploadedFile['type']!='image/jpeg') and ($uploadedFile['type']!='image/jpg') and ($uploadedFile['type']!='image/png')) {
+        $error[] = "the wrong type! Load .jpeg, .jpg or .png";        
+    } 
+    elseif ($uploadedFile['size']>1000) {
+       $error[] = "image is too big";
+      }
+
+    return $error;
+}
+
+function save_uploaded_image($file) {
+   // print_r($file);
+    $uploaddir = './images/';
+    $uploadfile = $uploaddir.basename($file['name']);
+
+    if (copy($file['tmp_name'], $uploadfile)){
+        echo "<img src='".$uploadfile ."'><br>";
+    }    
+}
+
+
+function create_message($message) {
+    global $dbCon;
+
+    $string0 = $message['user_id'];
+    $string1 = $message['text'];
+    $string2 = $message['image_path'];
+
+
+    $sql = sprintf("INSERT INTO twitts (user_id, message,image_path) VALUES ('%s', '%s', '%s')", $string0, $string1, $string2);
+
+    print_r($sql);
+    $result = mysqli_query($dbCon, $sql); 
+}
+
+function get_messages_by_user($user) {
+    global $dbCon;
+    $userMessagesArray = array();
+
+    $sql = "SELECT id, message, image_path, create_at from twitts ORDER BY create_at DESC";
+    $result = mysqli_query ($dbCon, $sql); 
+
+    while($row = mysqli_fetch_assoc($result)){
+        $userMessagesArray[] = $row;
+    }
+
+    return $userMessagesArray;
+}
+
+//     }
+// return null; 
+// }
+

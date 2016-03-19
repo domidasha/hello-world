@@ -7,25 +7,32 @@ $message=array();
 $userMessagesArray=array();
 
 
+
 	$user = getCurrentUser();
 	if ($user==null) {
 		redirect('index.php');
 	} 
 
-	echo $_SESSION['id'];
-	if ($_SERVER['REQUEST_METHOD']=='POST') {
+	echo "Hello, <b>".$user['name']."</b>!";
+
+
+
+	if (isset($_POST['clean'])) {
+		clean_table($user);
+	}
+
+	if ($_SERVER['REQUEST_METHOD']=='POST' and isset($_POST['submit'])) {
 		
 		$errorMessage = validate_message_field($_POST['message']);
 	
 		if (isset($_FILES['uploaded'])  && !empty($_FILES['uploaded']['name'])) {
-			//$fileArray= $_FILES['uploaded'];
-
+		
 			$errorImage = validate_uploaded_file($_FILES['uploaded']);
 			
 		}	
 
 		if (empty($errorMessage) and empty($errorImage)) {
-			//print_r($_FILES['uploaded']);
+			
 			
 			if (empty($_FILES['uploaded']['name'])) {
 				$message["image_path"] = '';
@@ -38,10 +45,7 @@ $userMessagesArray=array();
 			$message["user_id"] = $user['id'];
 
 			create_message($message);
-			
-
 		}
-//	$myfile = $_FILES['uploadfile']['type'];
 
 	}
 ?>	
@@ -57,11 +61,11 @@ $userMessagesArray=array();
 		width: 900px;
 		margin: 50px auto;
 		background: #bbb;
+		font-family: Helvetica, Arial, sans-serif;
 	}
 
 	a {
 		color: #fefefe;
-		font-family: Helvetica, Arial, sans-serif;
 	}
 
 	a:hover {
@@ -100,6 +104,7 @@ $userMessagesArray=array();
 <body>
 <p>
 	<a href="logout.php">Logout</a>
+
 </p>
 
 
@@ -122,7 +127,8 @@ $userMessagesArray=array();
 		}
 	?>
 	<br>
-	<input type="submit" value="Submit"></input>
+	<input type="submit" name="clean" value="Clean ALL messages"></input>
+	<input type="submit" name="submit" value="Submit"></input>
 </form>
 
 
@@ -140,10 +146,6 @@ if (!empty($userMessagesArray)) {
 	 <?php endforeach;
 }
 ?>
-
-
-
-
 	
 </body>
 </html>

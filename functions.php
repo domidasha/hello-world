@@ -5,6 +5,7 @@ $dbUser = "root";
 $dbPassword = "root";
 $dbName = "twitter";
 $dbCon = mysqli_connect($dbHost, $dbUser, $dbPassword, $dbName);
+$imagesArray=array('jpeg', 'png', 'jpg', 'gif');
 
 
 if (mysqli_connect_errno())
@@ -108,15 +109,25 @@ function redirect($address) {
 
 
 function validate_uploaded_file($uploadedFile) {
+    global  $imagesArray;
     $error = array();
+    $isImg = false;
     
-    print_r(array_key_exists('size', $uploadedFile));
-      
-    if (($uploadedFile['type']!='image/jpeg') and ($uploadedFile['type']!='image/jpg') and ($uploadedFile['type']!='image/png')) {
-        $error[] = "the wrong type! Load .jpeg, .jpg or .png";        
-    } 
-    elseif ($uploadedFile['size']>100000) {
-       $error[] = "image is too big";
+   // print_r(array_key_exists('size', $uploadedFile));
+
+    $type = substr($uploadedFile['type'], 6);
+  //  print_r($type);
+
+    foreach ($imagesArray as $imgType) {
+        if ($imgType == $type) {
+           $isImg = true; 
+        }        
+    }
+    if ($isImg == false) {
+        $error[] = "the wrong file type! please load image. "; 
+    }
+    if ($uploadedFile['size']>100000) {
+       $error[] = "File is too big";
       }
 
     return $error;
@@ -126,10 +137,11 @@ function save_uploaded_image($file) {
 
     $uploaddir = './images/';
     $uploadfile = $uploaddir.basename($file['name']);
+    copy($file['tmp_name'], $uploadfile);
 
-    if (copy($file['tmp_name'], $uploadfile)){
-        echo "<img src='".$uploadfile ."'><br>";
-    }    
+    // if (copy($file['tmp_name'], $uploadfile)){
+    //     echo "<img src='".$uploadfile ."'><br>";
+    // }    
 }
 
 
@@ -143,7 +155,7 @@ function create_message($message) {
 
     $sql = sprintf("INSERT INTO twitts (user_id, message,image_path) VALUES ('%s', '%s', '%s')", $string0, $string1, $string2);
 
-    print_r($sql);
+   // print_r($sql);
     $result = mysqli_query($dbCon, $sql); 
 }
 
@@ -175,4 +187,14 @@ function get_last_messages() {
     }
 
     return $userMessagesArray;
+}
+
+function clean_table ($user) { 
+    global $dbCon;
+    $userMessagesArray = array();
+    
+    $string = $user['id'];
+
+    $sql = sprintf("DELETE FROM twitts WHERE user_id = '%s'", $string);
+    $result = mysqli_query ($dbCon, $sql); 
 }

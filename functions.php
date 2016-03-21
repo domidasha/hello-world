@@ -113,9 +113,9 @@ function validate_uploaded_file($uploadedFile) {
     $error = array();
     $isImg = false;
     
-   // print_r(array_key_exists('size', $uploadedFile));
-
-    $type = substr($uploadedFile['type'], 6);
+   // print_r(array_key_exists('size', $uploadedFile)); $login = addslashes($login);
+    $type = addslashes($uploadedFile['type']);
+    $type = substr($type, 6);
   //  print_r($type);
 
     foreach ($imagesArray as $imgType) {
